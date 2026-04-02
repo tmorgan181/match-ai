@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { notifySignups, responses } from "@/lib/db/schema";
 import { desc } from "drizzle-orm";
 import type { Metadata } from "next";
+import { DeleteSignupButton } from "./DeleteSignupButton";
 import { ResponseTable } from "./ResponseTable";
 
 export const metadata: Metadata = { title: "Admin" };
@@ -14,8 +15,6 @@ export default async function AdminPage() {
     db.select().from(notifySignups).orderBy(desc(notifySignups.createdAt)),
   ]);
 
-  const matchedCount = all.filter((r) => r.matchedAt).length;
-
   return (
     <main className="min-h-screen bg-neutral-950 text-neutral-100 px-6 py-12">
       <div className="max-w-6xl mx-auto flex flex-col gap-12">
@@ -24,7 +23,7 @@ export default async function AdminPage() {
           <div>
             <h1 className="text-xl font-bold">Responses</h1>
             <p className="text-sm text-neutral-500 mt-1">
-              {all.length} total · {matchedCount} matched
+              {all.length} total
             </p>
           </div>
           <a href="/" className="text-xs text-neutral-600 hover:text-neutral-400 transition-colors">
@@ -49,6 +48,7 @@ export default async function AdminPage() {
                   <tr className="border-b border-neutral-800 text-xs text-neutral-500 uppercase tracking-wide">
                     <th className="text-left px-4 py-2">Email</th>
                     <th className="text-left px-4 py-2">Signed up</th>
+                    <th className="text-left px-4 py-2"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -56,6 +56,9 @@ export default async function AdminPage() {
                     <tr key={s.id} className="border-b border-neutral-800/50 last:border-0">
                       <td className="px-4 py-2 text-neutral-300">{s.email}</td>
                       <td className="px-4 py-2 text-neutral-500 tabular-nums">{s.createdAt}</td>
+                      <td className="px-4 py-2">
+                        <DeleteSignupButton id={s.id} />
+                      </td>
                     </tr>
                   ))}
                 </tbody>

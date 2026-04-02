@@ -96,12 +96,6 @@ export default async function AdminResponsePage({
         <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 px-5 py-5 flex flex-col gap-2">
           <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Admin notes</p>
           <p className="text-sm text-neutral-300">{response.matchNotes || "None"}</p>
-          {response.matchedAt && (
-            <p className="text-xs text-violet-400 mt-1">
-              Matched {new Date(response.matchedAt).toLocaleDateString()}
-              {response.matchedWith && ` · with ${response.matchedWith}`}
-            </p>
-          )}
         </div>
 
         {/* All answers */}
