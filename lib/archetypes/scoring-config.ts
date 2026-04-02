@@ -1,337 +1,224 @@
 import type { ArchetypeKey } from "./definitions";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 export type ArchetypeScores = Partial<Record<ArchetypeKey, number>>;
 
-/** Conditions for scale (1–5) questions. All matching rules stack additively. */
 export type ScaleCondition =
-  | { gte: number }            // answer >= value
-  | { lte: number }            // answer <= value
-  | { eq: number }             // answer === value
-  | { between: [number, number] } // inclusive range
-  | { any: true };             // any non-null answer (engagement signal)
+  | { gte: number }
+  | { lte: number }
+  | { eq: number }
+  | { between: [number, number] }
+  | { any: true };
 
 export type ScaleRule = { when: ScaleCondition; add: ArchetypeScores };
-
 export type ScaleConfig = { type: "scale"; rules: ScaleRule[] };
 
-/**
- * Yes / No / Sometimes question.
- * If `sometimes` is omitted the engine auto-computes floor(yes[key] / 2) for each archetype.
- * Negative values are allowed (e.g. purist: -2).
- */
 export type YNSConfig = {
   type: "yns";
   yes?: ArchetypeScores;
-  sometimes?: ArchetypeScores; // omit to use auto-half of yes weights
+  sometimes?: ArchetypeScores;
   no?: ArchetypeScores;
 };
 
-/** Multiple-choice question keyed by option value. */
 export type ChoiceConfig = {
   type: "choice";
   options: Record<string, ArchetypeScores>;
 };
 
 export type QuestionConfig = ScaleConfig | YNSConfig | ChoiceConfig;
-
-/** Map from question id → scoring config. Add/remove/edit rules here. */
 export type ScoringConfig = Record<string, QuestionConfig>;
 
-// ---------------------------------------------------------------------------
-// Config
-// Edit weights here. No changes to scoring.ts needed.
-// ---------------------------------------------------------------------------
-
 export const SCORING_CONFIG: ScoringConfig = {
-
-  // Q3 — The benefits of AI outweigh the risks (agree/disagree)
   q3: {
     type: "scale",
     rules: [
-      { when: { gte: 4 }, add: { builder: 2 } },
-      { when: { eq: 3 },  add: { builder: 1, skeptic: 1, researcher: 1 } },
-      { when: { lte: 2 }, add: { skeptic: 2, purist: 2 } },
+      { when: { gte: 4 }, add: { optimist: 3, builder: 1, pragmatist: 1, skeptic: -2, antagonist: -2, doomer: -2 } },
+      { when: { eq: 3 }, add: { student: 1 } },
+      { when: { lte: 2 }, add: { skeptic: 2, antagonist: 1, purist: 1 } },
     ],
   },
-
-  // Q4 — Human creativity is inherently more valuable than AI-generated content
   q4: {
     type: "scale",
     rules: [
-      { when: { gte: 4 }, add: { purist: 2, moderator: 1 } },
-      { when: { eq: 5 },  add: { purist: 1 } },  // stacks: eq5 → total +3
-      { when: { lte: 2 }, add: { builder: 2 } },
+      { when: { gte: 4 }, add: { student: 4, builder: 1 } },
+      { when: { lte: 2 }, add: { pragmatist: 1 } },
     ],
   },
-
-  // Q5 — I am concerned about the environmental impacts of AI datacenters
   q5: {
     type: "scale",
     rules: [
-      { when: { gte: 4 }, add: { guardian: 2, advocate: 1 } },
-      { when: { lte: 2 }, add: { builder: 1 } },
+      { when: { gte: 4 }, add: { student: 4, skeptic: 1 } },
+      { when: { lte: 2 }, add: { builder: 1, pragmatist: 1 } },
     ],
   },
-
-  // Q6 — AI chatbots can provide meaningful emotional support
   q6: {
     type: "scale",
     rules: [
-      { when: { lte: 2 }, add: { guardian: 2, skeptic: 2 } },
-      { when: { gte: 4 }, add: { connector: 1, builder: 1 } },
+      { when: { gte: 4 }, add: { optimist: 4, builder: 1 } },
+      { when: { lte: 2 }, add: { skeptic: 1, purist: 1 } },
     ],
   },
-
-  // Q7 — I always want to know the truth, even if it means I was wrong
   q7: {
     type: "scale",
     rules: [
-      { when: { gte: 4 }, add: { researcher: 2, advocate: 1 } },
-      { when: { eq: 5 },  add: { researcher: 1 } }, // stacks: eq5 → total +3
+      { when: { gte: 4 }, add: { pragmatist: 5, optimist: 1, guardian: -2 } },
+      { when: { lte: 2 }, add: { guardian: 2, student: 1, doomer: 1 } },
     ],
   },
-
-  // Q8 — AI is making humanity dumber
   q8: {
     type: "scale",
     rules: [
-      { when: { gte: 4 }, add: { skeptic: 2, purist: 2 } },
-      { when: { lte: 2 }, add: { builder: 2 } },
+      { when: { gte: 4 }, add: { skeptic: 4, antagonist: 1, doomer: -1 } },
+      { when: { lte: 2 }, add: { optimist: 2, builder: 1 } },
     ],
   },
-
-  // Q9 — AI will become conscious before the year 2100
   q9: {
     type: "scale",
     rules: [
-      { when: { gte: 4 }, add: { builder: 2 } },
-      { when: { lte: 2 }, add: { skeptic: 2 } },
-      { when: { any: true }, add: { researcher: 1 } }, // engagement signal
+      { when: { gte: 4 }, add: { purist: 4, guardian: 1 } },
+      { when: { lte: 2 }, add: { builder: 1, optimist: 1 } },
     ],
   },
-
-  // Q10 — Traditional education is better than AI-assisted learning
   q10: {
     type: "scale",
     rules: [
-      { when: { gte: 4 }, add: { purist: 3, guardian: 1 } },
-      { when: { lte: 2 }, add: { builder: 2 } },
+      { when: { gte: 4 }, add: { purist: 4, antagonist: 4, doomer: 4, optimist: -2, builder: -1 } },
+      { when: { eq: 3 }, add: { skeptic: 1 } },
+      { when: { lte: 2 }, add: { optimist: 2, builder: 1, pragmatist: 1 } },
     ],
   },
-
-  // Q11 — AI should be regulated more strictly than it currently is
   q11: {
     type: "scale",
     rules: [
-      { when: { gte: 4 }, add: { advocate: 3, guardian: 2, skeptic: 2 } },
-      { when: { lte: 2 }, add: { builder: 1 } },
+      { when: { gte: 4 }, add: { antagonist: 4, guardian: 3, skeptic: 1 } },
+      { when: { lte: 2 }, add: { optimist: 1 } },
     ],
   },
-
-  // Q12 — AI-generated content should be clearly labeled
   q12: {
     type: "scale",
     rules: [
-      { when: { gte: 4 }, add: { moderator: 2, guardian: 2, purist: 2 } },
+      { when: { gte: 4 }, add: { doomer: 5, student: 1, pragmatist: -1 } },
+      { when: { eq: 3 }, add: { skeptic: 1 } },
+      { when: { lte: 2 }, add: { optimist: 1, pragmatist: 1 } },
     ],
   },
-
-  // Q13 — The current pace of AI development is too fast
   q13: {
     type: "scale",
     rules: [
-      { when: { gte: 4 }, add: { guardian: 2, skeptic: 2, purist: 2 } },
-      { when: { lte: 2 }, add: { builder: 1 } },
+      { when: { gte: 4 }, add: { guardian: 4, antagonist: 1 } },
+      { when: { eq: 3 }, add: { guardian: 1 } },
     ],
   },
-
-  // Q14 — AI music is legitimate art
   q14: {
     type: "scale",
     rules: [
-      { when: { lte: 2 }, add: { purist: 3 } },
-      { when: { gte: 4 }, add: { builder: 2 } },
+      { when: { gte: 4 }, add: { guardian: 1, student: 1 } },
     ],
   },
-
-  // Q15 — Familiarity: the suicide of Sewell Setzer III
   q15: {
     type: "scale",
     rules: [
-      { when: { gte: 4 }, add: { guardian: 3 } },
-      { when: { eq: 3 },  add: { guardian: 1 } },
+      { when: { gte: 4 }, add: { doomer: 3, student: 2, builder: 1 } },
+      { when: { eq: 3 }, add: { student: 1 } },
     ],
   },
-
-  // Q16 — Familiarity: social media recommendation algorithms
   q16: {
     type: "scale",
     rules: [
-      { when: { gte: 4 }, add: { moderator: 2, advocate: 1, researcher: 1 } },
+      { when: { gte: 4 }, add: { antagonist: 2, builder: 1, skeptic: 1 } },
     ],
   },
-
-  // Q17 — Familiarity: the concept of "AI slop"
   q17: {
-    type: "scale",
-    rules: [
-      { when: { gte: 4 }, add: { moderator: 3, purist: 2 } },
-    ],
+    type: "yns",
+    yes: { builder: 3, optimist: 2, pragmatist: 1, purist: -2, antagonist: -2, skeptic: -1 },
+    sometimes: { builder: 1, student: 1, optimist: 1, purist: -1, antagonist: -1 },
+    no: { purist: 2, skeptic: 1, antagonist: 1 },
   },
-
-  // Q18 — Familiarity: the EU AI Act
   q18: {
-    type: "scale",
-    rules: [
-      { when: { gte: 4 }, add: { advocate: 3, researcher: 1 } },
-    ],
+    type: "yns",
+    yes: { builder: 5, pragmatist: 1, student: -1 },
+    sometimes: { builder: 2, student: 1 },
+    no: { student: 1, guardian: 1 },
   },
-
-  // Q19 — Familiarity: AI alignment research
   q19: {
-    type: "scale",
-    rules: [
-      { when: { gte: 4 }, add: { researcher: 2, builder: 1 } },
-    ],
+    type: "yns",
+    yes: { guardian: 4, antagonist: 3 },
+    sometimes: { guardian: 2, antagonist: 1 },
   },
-
-  // Q20 — Do you use AI chatbots?
   q20: {
     type: "yns",
-    yes:       { builder: 2, connector: 1 },
-    sometimes: { researcher: 1, moderator: 1 }, // explicit override of auto-half
-    no:        { skeptic: 2, purist: 2 },
+    yes: { antagonist: 5, guardian: 1, pragmatist: -1 },
+    sometimes: { antagonist: 2, skeptic: 1 },
   },
-
-  // Q21 — Do you regularly vote in municipal and state elections?
   q21: {
     type: "yns",
-    yes:       { advocate: 2, guardian: 1 },
-    sometimes: { advocate: 1 },
-    // no: no points
-  },
-
-  // Q22 — Have you or someone you know experienced harm from AI chatbot interactions?
-  q22: {
-    type: "yns",
-    yes:       { guardian: 3 },
-    sometimes: { guardian: 1 }, // explicit (not auto-half)
-    // no: no points
-  },
-
-  // Q23 — Could you write Fibonacci in pseudocode/code?
-  q23: {
-    type: "yns",
-    yes:       { builder: 3, moderator: 2, researcher: 1 },
-    sometimes: { builder: 1, researcher: 1 }, // explicit override
-    // no: no points
-  },
-
-  // Q24 — Does your job involve writing emails or communication?
-  q24: {
-    type: "yns",
-    yes:       { connector: 2, advocate: 1 },
-    sometimes: { connector: 1 },
-  },
-
-  // Q25 — Do you or have you ever occupied a seat on any political committee?
-  q25: {
-    type: "yns",
-    yes:       { advocate: 3 },
-    sometimes: { advocate: 1 },
-  },
-
-  // Q26 — Do you handle legal documents or regulatory material?
-  q26: {
-    type: "yns",
-    yes:       { advocate: 2 },
-    sometimes: { advocate: 1 },
-  },
-
-  // Q27 — Are you involved in construction, engineering, or computer science?
-  q27: {
-    type: "yns",
-    yes:       { builder: 2, moderator: 1 },
-    sometimes: { builder: 1 },
-  },
-
-  // Q28 — Do you have children or other individuals for whom you are a guardian?
-  q28: {
-    type: "yns",
-    yes:       { guardian: 2 },
-    sometimes: { guardian: 1 },
-  },
-
-  // Q29 — Have you reported AI-generated misinformation or bot accounts online?
-  q29: {
-    type: "yns",
-    yes:       { moderator: 3, guardian: 1 },
-    sometimes: { moderator: 2 },
-  },
-
-  // Q30 — Do you moderate or administer an online community?
-  q30: {
-    type: "yns",
-    yes:       { moderator: 2, connector: 2 },
-    sometimes: { moderator: 1, connector: 1 },
-  },
-
-  // Q31 — Do you create art, music, or other creative work?
-  q31: {
-    type: "yns",
-    yes:       { purist: 2 },
+    yes: { purist: 3 },
     sometimes: { purist: 1 },
   },
-
-  // Q32 — Have you used AI to generate images or art? (negative scoring for purist)
-  q32: {
+  q22: {
     type: "yns",
-    yes:       { builder: 2, purist: -2 },
+    yes: { builder: 2, optimist: 1, purist: -2, antagonist: -1 },
     sometimes: { builder: 1, purist: -1 },
-    no:        { purist: 1 },
+    no: { purist: 1, antagonist: 1 },
   },
-
-  // Q33 — When was the last time you talked to someone about your mental health?
-  q33: {
+  q23: {
+    type: "yns",
+    yes: { student: 3, doomer: 1, skeptic: 1 },
+    sometimes: { student: 1 },
+  },
+  q24: {
     type: "choice",
     options: {
-      week:     { guardian: 2, connector: 2 },
-      month:    { guardian: 1, connector: 1 },
-      year:     { guardian: 1 },
-      over_year: {},
-      never:    {},
+      lt_6m: { student: 3 },
+      "6m_2y": { student: 2 },
+      "2y_5y": { builder: 1, skeptic: 1, optimist: 1 },
+      gt_5y: { builder: 1, pragmatist: 1, skeptic: 1, doomer: 1 },
     },
   },
-
-  // Q34 — What is your primary concern about AI?
-  q34: {
+  q25: {
     type: "choice",
     options: {
-      mental_health:    { guardian: 3 },
-      environment:      { advocate: 2, guardian: 1 },
-      job_displacement: { advocate: 2, skeptic: 1 },
-      misinformation:   { moderator: 3, advocate: 1 },
-      privacy:          { advocate: 2, guardian: 1 },
-      creativity_loss:  { purist: 3 },
-      existential_risk: { researcher: 2 },
-      not_concerned:    { builder: 2 },
+      mental_health: { guardian: 4, antagonist: 1 },
+      environment: { guardian: 3, skeptic: 1 },
+      job_displacement: { antagonist: 4, skeptic: 1 },
+      misinformation: { antagonist: 2, guardian: 1, skeptic: 1 },
+      privacy: { guardian: 2, antagonist: 2 },
+      creativity_loss: { purist: 4 },
+      existential: { doomer: 5 },
+      not_concerned: { optimist: 3, pragmatist: 1, guardian: -3, doomer: -3 },
     },
   },
-
-  // Q35 — How much technical knowledge do you have about how AI works?
-  q35: {
+  q26: {
     type: "choice",
     options: {
-      expert:       { builder: 3, moderator: 2, researcher: 2 },
-      advanced:     { builder: 2, moderator: 2, researcher: 1 },
-      intermediate: { builder: 1, moderator: 1, researcher: 1 },
-      basic:        { connector: 1, guardian: 1, advocate: 1 },
-      elementary:   { connector: 1, purist: 1 },
-      none:         { purist: 1, connector: 1 },
+      government: { guardian: 2 },
+      companies: { pragmatist: 2, optimist: 1 },
+      international: { doomer: 1, guardian: 1, student: 1 },
+      open_source: { builder: 2, optimist: 1 },
+      no_one: { pragmatist: 2, skeptic: 1 },
+    },
+  },
+  q27: {
+    type: "choice",
+    options: {
+      builder: { builder: 5 },
+      guardian: { guardian: 5 },
+      student: { student: 5 },
+      optimist: { optimist: 5 },
+      pragmatist: { pragmatist: 5 },
+      skeptic: { skeptic: 5 },
+      purist: { purist: 5 },
+      antagonist: { antagonist: 5 },
+      doomer: { doomer: 5 },
+    },
+  },
+  q28: {
+    type: "choice",
+    options: {
+      expert: { builder: 3, pragmatist: 1, optimist: 1 },
+      advanced: { builder: 2, student: 1, pragmatist: 1 },
+      intermediate: { builder: 1, student: 1 },
+      basic: { student: 1, guardian: 1 },
+      very_little: { student: 2, purist: 1 },
     },
   },
 };

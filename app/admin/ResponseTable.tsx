@@ -6,11 +6,15 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const ARCHETYPE_COLORS: Record<string, string> = {
+  antagonist: "bg-red-950/50 text-red-300 border-red-800",
   builder: "bg-blue-900/50 text-blue-300 border-blue-700",
+  doomer: "bg-stone-900/50 text-stone-300 border-stone-700",
   guardian: "bg-green-900/50 text-green-300 border-green-700",
-  advocate: "bg-orange-900/50 text-orange-300 border-orange-700",
-  researcher: "bg-yellow-900/50 text-yellow-300 border-yellow-700",
-  connector: "bg-pink-900/50 text-pink-300 border-pink-700",
+  optimist: "bg-emerald-900/50 text-emerald-300 border-emerald-700",
+  pragmatist: "bg-amber-900/50 text-amber-300 border-amber-700",
+  purist: "bg-rose-900/50 text-rose-300 border-rose-700",
+  skeptic: "bg-zinc-800 text-zinc-300 border-zinc-600",
+  student: "bg-cyan-900/50 text-cyan-300 border-cyan-700",
 };
 
 function MatchedToggle({ id, matched }: { id: string; matched: boolean }) {

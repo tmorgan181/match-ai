@@ -24,7 +24,14 @@ export default async function AdminResponsePage({
 
   const archetype = ARCHETYPES[response.archetype as ArchetypeKey];
   const answers = JSON.parse(response.answers) as Record<string, string | number>;
-  const scores = JSON.parse(response.scoreData) as Record<string, number>;
+  const parsedScoreData = JSON.parse(response.scoreData) as {
+    scores?: Record<string, number>;
+    confidence?: number;
+  } | Record<string, number>;
+  const scores = "scores" in parsedScoreData && parsedScoreData.scores
+    ? parsedScoreData.scores
+    : parsedScoreData as Record<string, number>;
+  const maxScore = Math.max(...Object.values(scores), 1);
 
   // Build a flat question map for lookup
   const questionMap: Record<string, string> = {};
@@ -61,6 +68,11 @@ export default async function AdminResponsePage({
           <div className="flex items-center gap-3">
             <span className="text-base font-semibold">{archetype.name}</span>
             <span className="text-xs text-violet-400">{archetype.tagline}</span>
+            {"confidence" in parsedScoreData && typeof parsedScoreData.confidence === "number" && (
+              <span className="text-xs text-neutral-500">
+                {parsedScoreData.confidence}% confidence
+              </span>
+            )}
           </div>
           <div className="flex flex-wrap gap-3">
             {Object.entries(scores)
@@ -71,7 +83,7 @@ export default async function AdminResponsePage({
                   <div className="w-16 h-1.5 bg-neutral-800 rounded-full">
                     <div
                       className="h-1.5 bg-violet-500 rounded-full"
-                      style={{ width: `${(score / 9) * 100}%` }}
+                      style={{ width: `${Math.max(0, (score / maxScore) * 100)}%` }}
                     />
                   </div>
                   <span className="text-xs text-neutral-600">{score}</span>

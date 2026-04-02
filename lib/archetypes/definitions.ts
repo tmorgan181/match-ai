@@ -1,12 +1,13 @@
 export const ARCHETYPE_KEYS = [
-  "advocate",
+  "antagonist",
   "builder",
-  "connector",
+  "doomer",
   "guardian",
-  "moderator",
+  "optimist",
+  "pragmatist",
   "purist",
-  "researcher",
   "skeptic",
+  "student",
 ] as const;
 
 export type ArchetypeKey = (typeof ARCHETYPE_KEYS)[number];
@@ -15,60 +16,67 @@ export const ARCHETYPES: Record<
   ArchetypeKey,
   { name: string; tagline: string; description: string; strengths: string[] }
 > = {
+  antagonist: {
+    name: "The Antagonist",
+    tagline: "AI is already hurting people, and I want it pushed back.",
+    description:
+      "Your opposition is grounded in present-day harm. Job displacement, surveillance, manipulation, spam, and creative erosion are not hypothetical to you. You do not need an abstract theory of AI danger to feel that this is already going badly.",
+    strengths: ["Concrete realism", "Present-harm awareness", "Resistance to normalization"],
+  },
   builder: {
     name: "The Builder",
-    tagline: "I want to create better AI systems.",
+    tagline: "I want to build better systems.",
     description:
-      "Driven by technical skill and constructive ambition. You see AI as a tool to improve and tend to move toward making things — prototypes, systems, solutions.",
-    strengths: ["Prototyping", "Implementation", "Rapid iteration"],
+      "You are technically oriented and solution-focused. When AI creates problems, your instinct is to improve the tools, redesign the system, or build something more responsible rather than stepping away from the work entirely.",
+    strengths: ["Technical fluency", "Practical problem-solving", "Systems thinking"],
+  },
+  doomer: {
+    name: "The Doomer",
+    tagline: "We are underestimating how dangerous this could become.",
+    description:
+      "You are focused on existential or civilizational risk. The stakes are not only job disruption or junk content, but loss of control, irreversible catastrophe, or extinction. You think the conversation is still too small for the threat.",
+    strengths: ["Long-range risk perception", "Systems awareness", "Seriousness about failure modes"],
   },
   guardian: {
     name: "The Guardian",
-    tagline: "I want to protect people from AI harm.",
+    tagline: "I want to protect people from harm.",
     description:
-      "Protective instinct meets practical concern. You focus on the humans affected by AI — especially vulnerable populations — and your first question is always 'who could this hurt?'",
-    strengths: ["Harm identification", "User safety review", "Ethical grounding"],
+      "You focus first on who gets hurt. AI is not abstract to you. It lands in people's lives, especially vulnerable people's lives, and that moral reality shapes how you think about speed, safeguards, and responsibility.",
+    strengths: ["Harm detection", "Moral clarity", "Human-centered judgment"],
   },
-  advocate: {
-    name: "The Advocate",
-    tagline: "I want to change AI policy and regulation.",
+  optimist: {
+    name: "The Optimist",
+    tagline: "AI will be a net benefit if we let it grow.",
     description:
-      "System-level thinker. You believe the problem isn't individual behavior but the structures that enable harm. Your toolkit is organizing, policy, and stakeholder engagement.",
-    strengths: ["Policy writing", "Stakeholder engagement", "Organizing"],
+      "You see AI as a powerful positive force. Risks are real, but the wider conversation often feels too dominated by fear and cynicism. Your emotional baseline is hope, possibility, and confidence in human adaptation.",
+    strengths: ["Vision", "Enthusiasm", "Future orientation"],
   },
-  researcher: {
-    name: "The Researcher",
-    tagline: "I want to understand AI before acting.",
+  pragmatist: {
+    name: "The Pragmatist",
+    tagline: "We have to keep up, whether we like it or not.",
     description:
-      "Curiosity-driven and rigorous. You don't trust simple answers and you're comfortable sitting in uncertainty while you gather more evidence. Your contribution is asking the questions others skip.",
-    strengths: ["Analysis", "Rigorous questioning", "Spotting assumptions"],
-  },
-  connector: {
-    name: "The Connector",
-    tagline: "I want to bring people together around AI.",
-    description:
-      "You see isolation as part of the problem. Your instinct is to introduce people, facilitate conversations, and create spaces where others can collaborate.",
-    strengths: ["Facilitation", "Empathy", "Communication"],
-  },
-  skeptic: {
-    name: "The Skeptic",
-    tagline: "I doubt AI is net-good. Prove it to me.",
-    description:
-      "You're not convinced the benefits outweigh the risks. You're open to evidence but your default is doubt, and you think most people are too optimistic about what AI can or should do.",
-    strengths: ["Critical analysis", "Risk assessment", "Challenging assumptions"],
+      "You think AI development is driven by competitive reality. Markets move, governments compete, and the technology will not wait for moral consensus. Even if there are risks, slowing down can itself feel dangerous.",
+    strengths: ["Strategic realism", "Competitive awareness", "Decisiveness"],
   },
   purist: {
     name: "The Purist",
-    tagline: "I value human creation above all.",
+    tagline: "Some things should stay human.",
     description:
-      "You believe there's something irreplaceable about human-made art, human learning, and human connection. AI feels like a threat to what makes us human, and you're actively working to preserve human-only spaces.",
-    strengths: ["Cultural preservation", "Artistic integrity", "Human-centered values"],
+      "You think AI threatens something fundamental in human life: creativity, dignity, authorship, relationship, learning, or meaning. Your resistance is not only about risk. It is also about principle and boundaries.",
+    strengths: ["Philosophical clarity", "Cultural preservation", "Norm-setting"],
   },
-  moderator: {
-    name: "The Moderator",
-    tagline: "I fight AI misuse with AI tools.",
+  skeptic: {
+    name: "The Skeptic",
+    tagline: "I'm not convinced AI is delivering what it promises.",
     description:
-      "You're technically fluent and practically focused on cultural integrity. You use AI to combat bots, slop, and manipulation — not because you love AI, but because you know how it works and you're not willing to cede the internet to bad actors.",
-    strengths: ["Counter-measures", "Platform literacy", "Authenticity enforcement"],
+      "You resist hype. The benefits seem overstated, the marketing outpaces the evidence, and many grand claims collapse under scrutiny. You are open to persuasion, but enthusiasm is not enough for you.",
+    strengths: ["Critical distance", "Evidence focus", "Hype resistance"],
+  },
+  student: {
+    name: "The Student",
+    tagline: "I want to understand AI before I decide what to do.",
+    description:
+      "You lead with learning. You do not trust easy narratives, whether optimistic or catastrophic, and you are comfortable saying you need more evidence. In a polarized environment, your patience and humility are a strength.",
+    strengths: ["Curiosity", "Intellectual humility", "Careful reasoning"],
   },
 };

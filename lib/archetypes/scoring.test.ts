@@ -1,155 +1,175 @@
 import { describe, expect, it } from "vitest";
-import { assignArchetype, scoreAnswers } from "./scoring";
+import { assignArchetype, computeConfidence, scoreAnswers } from "./scoring";
 
 describe("scoreAnswers", () => {
-
   it("returns zero scores for empty answers", () => {
     const scores = scoreAnswers({});
-    for (const v of Object.values(scores)) expect(v).toBe(0);
+    for (const value of Object.values(scores)) expect(value).toBe(0);
   });
 
-  it("skipped questions contribute zero", () => {
-    const scores = scoreAnswers({ q3: undefined, q20: undefined });
-    for (const v of Object.values(scores)) expect(v).toBe(0);
-  });
-
-  it("scores builder via technical questions", () => {
+  it("builder profile lands on builder", () => {
     const scores = scoreAnswers({
-      q3: 5,        // benefits outweigh risks → builder +2
-      q20: "yes",   // uses AI chatbots → builder +2
-      q23: "yes",   // can write fibonacci → builder +3
-      q27: "yes",   // CS/engineering → builder +2
-      q35: "expert",// tech knowledge → builder +3
+      q3: 4,
+      q6: 4,
+      q17: "yes",
+      q18: "yes",
+      q22: "yes",
+      q27: "builder",
+      q28: "expert",
     });
-    expect(scores.builder).toBeGreaterThan(scores.guardian);
-    expect(scores.builder).toBeGreaterThan(scores.skeptic);
     expect(assignArchetype(scores)).toBe("builder");
   });
 
-  it("scores guardian via harm-awareness questions", () => {
+  it("guardian profile lands on guardian", () => {
     const scores = scoreAnswers({
-      q5: 5,        // environmental concern → guardian +2
-      q6: 1,        // AI can't provide emotional support → guardian +2
-      q11: 5,       // should be regulated → guardian +2
-      q15: 5,       // knows Sewell Setzer → guardian +3
-      q22: "yes",   // experienced AI harm → guardian +3
-      q28: "yes",   // has children → guardian +2
+      q7: 1,
+      q9: 4,
+      q11: 5,
+      q13: 5,
+      q19: "yes",
+      q25: "mental_health",
+      q27: "guardian",
     });
-    expect(scores.guardian).toBeGreaterThan(scores.builder);
     expect(assignArchetype(scores)).toBe("guardian");
   });
 
-  it("scores advocate via civic engagement questions", () => {
+  it("student profile lands on student", () => {
     const scores = scoreAnswers({
-      q11: 5,       // should be regulated → advocate +3
-      q18: 5,       // knows EU AI Act → advocate +3
-      q21: "yes",   // votes → advocate +2
-      q25: "yes",   // political committee → advocate +3
-      q26: "yes",   // legal material → advocate +2
+      q4: 5,
+      q5: 5,
+      q12: 3,
+      q23: "yes",
+      q24: "lt_6m",
+      q27: "student",
+      q28: "basic",
     });
-    expect(scores.advocate).toBeGreaterThan(scores.builder);
-    expect(assignArchetype(scores)).toBe("advocate");
+    expect(assignArchetype(scores)).toBe("student");
   });
 
-  it("scores researcher via curiosity signals", () => {
+  it("optimist profile lands on optimist", () => {
     const scores = scoreAnswers({
-      q7: 5,        // wants truth → researcher +3
-      q9: 3,        // engages with consciousness question → researcher +1
-      q19: 5,       // AI alignment research → researcher +2
-      q23: "yes",   // can code → researcher +1
-      q35: "advanced", // advanced tech knowledge → researcher +1
+      q3: 5,
+      q6: 5,
+      q8: 1,
+      q10: 1,
+      q12: 1,
+      q17: "yes",
+      q25: "not_concerned",
+      q27: "optimist",
     });
-    expect(scores.researcher).toBeGreaterThan(scores.connector);
-    expect(assignArchetype(scores)).toBe("researcher");
+    expect(assignArchetype(scores)).toBe("optimist");
   });
 
-  it("scores skeptic via doubt signals", () => {
+  it("pragmatist profile lands on pragmatist", () => {
     const scores = scoreAnswers({
-      q3: 1,        // benefits don't outweigh risks → skeptic +2
-      q8: 5,        // AI making humanity dumber → skeptic +2
-      q9: 1,        // AI won't be conscious → skeptic +2
-      q11: 5,       // should be regulated → skeptic +2
-      q13: 5,       // pace too fast → skeptic +2
-      q20: "no",    // doesn't use AI → skeptic +2
+      q3: 4,
+      q7: 5,
+      q10: 1,
+      q17: "yes",
+      q18: "yes",
+      q26: "companies",
+      q27: "pragmatist",
+      q28: "advanced",
     });
-    expect(scores.skeptic).toBeGreaterThan(scores.builder);
+    expect(assignArchetype(scores)).toBe("pragmatist");
+  });
+
+  it("skeptic profile lands on skeptic", () => {
+    const scores = scoreAnswers({
+      q3: 1,
+      q6: 2,
+      q8: 5,
+      q10: 3,
+      q11: 4,
+      q17: "no",
+      q25: "environment",
+      q27: "skeptic",
+    });
     expect(assignArchetype(scores)).toBe("skeptic");
   });
 
-  it("scores purist via creative-preservation signals", () => {
+  it("purist profile lands on purist", () => {
     const scores = scoreAnswers({
-      q4: 5,        // human creativity more valuable → purist +3
-      q8: 5,        // AI making humanity dumber → purist +2
-      q10: 5,       // traditional education better → purist +3
-      q14: 1,       // AI music is not art → purist +3
-      q20: "no",    // doesn't use AI → purist +2
-      q31: "yes",   // creates art → purist +2
-      q32: "no",    // hasn't used AI for art → purist +1
+      q9: 5,
+      q10: 5,
+      q17: "no",
+      q21: "yes",
+      q22: "no",
+      q25: "creativity_loss",
+      q27: "purist",
     });
-    expect(scores.purist).toBeGreaterThan(scores.builder);
     expect(assignArchetype(scores)).toBe("purist");
   });
 
-  it("scores moderator via platform-literacy signals", () => {
+  it("antagonist profile lands on antagonist", () => {
     const scores = scoreAnswers({
-      q12: 5,       // AI content should be labeled → moderator +2
-      q16: 5,       // knows recommendation algorithms → moderator +2
-      q17: 5,       // knows AI slop → moderator +3
-      q23: "yes",   // can code → moderator +2
-      q27: "yes",   // CS/engineering → moderator +1
-      q29: "yes",   // reported misinformation → moderator +3
-      q30: "yes",   // moderates community → moderator +2
+      q3: 1,
+      q10: 5,
+      q11: 5,
+      q17: "no",
+      q19: "yes",
+      q20: "yes",
+      q25: "job_displacement",
+      q27: "antagonist",
     });
-    expect(scores.moderator).toBeGreaterThan(scores.builder);
-    expect(assignArchetype(scores)).toBe("moderator");
+    expect(assignArchetype(scores)).toBe("antagonist");
   });
 
-  it("breaks ties alphabetically (advocate < builder)", () => {
+  it("doomer profile lands on doomer", () => {
+    const scores = scoreAnswers({
+      q7: 1,
+      q10: 5,
+      q12: 5,
+      q15: 5,
+      q23: "yes",
+      q25: "existential",
+      q27: "doomer",
+    });
+    expect(assignArchetype(scores)).toBe("doomer");
+  });
+
+  it("breaks ties alphabetically", () => {
     const tiedScores = {
-      advocate: 10, builder: 10, connector: 10,
-      guardian: 10, moderator: 10, purist: 10,
-      researcher: 10, skeptic: 10,
+      antagonist: 10,
+      builder: 10,
+      doomer: 10,
+      guardian: 10,
+      optimist: 10,
+      pragmatist: 10,
+      purist: 10,
+      skeptic: 10,
+      student: 10,
     };
-    expect(assignArchetype(tiedScores)).toBe("advocate");
+    expect(assignArchetype(tiedScores)).toBe("antagonist");
   });
 
   it("yns sometimes auto-computes floor(yes / 2) when not explicit", () => {
-    // q21 yes → advocate +2, guardian +1; sometimes not specified → advocate +1, guardian +0
-    const scoresYes = scoreAnswers({ q21: "yes" });
-    const scoresSometimes = scoreAnswers({ q21: "sometimes" });
-    expect(scoresSometimes.advocate).toBe(Math.floor(scoresYes.advocate / 2));
+    const yesScores = scoreAnswers({ q21: "yes" });
+    const sometimesScores = scoreAnswers({ q21: "sometimes" });
+    expect(sometimesScores.purist).toBe(Math.floor(yesScores.purist / 2));
   });
 
-  it("yns sometimes uses explicit config when provided (q20)", () => {
-    // q20 sometimes is explicit: researcher +1, moderator +1 (not half of yes)
-    const scores = scoreAnswers({ q20: "sometimes" });
-    expect(scores.researcher).toBe(1);
-    expect(scores.moderator).toBe(1);
-    expect(scores.builder).toBe(0); // yes gives builder +2, sometimes override doesn't
-  });
-
-  it("negative scoring reduces archetype score (q32 purist)", () => {
-    const before = scoreAnswers({ q31: "yes" }); // purist +2
-    const after = scoreAnswers({ q31: "yes", q32: "yes" }); // purist +2 then -2
+  it("negative scoring can reduce an archetype total", () => {
+    const before = scoreAnswers({ q21: "yes" });
+    const after = scoreAnswers({ q21: "yes", q22: "yes" });
     expect(after.purist).toBeLessThan(before.purist);
   });
 
-  it("stacking scale rules work (q4: purist gets +3 at 5)", () => {
-    const scores = scoreAnswers({ q4: 5 });
-    expect(scores.purist).toBe(3); // gte:4 → +2, then eq:5 → +1 more
+  it("stacking scale rules work for q3", () => {
+    const scores = scoreAnswers({ q3: 5 });
+    expect(scores.optimist).toBe(3);
+    expect(scores.skeptic).toBe(-2);
   });
 
-  it("any-condition fires for any non-null answer (q9 researcher)", () => {
-    const at1 = scoreAnswers({ q9: 1 });
-    const at5 = scoreAnswers({ q9: 5 });
-    expect(at1.researcher).toBeGreaterThan(0);
-    expect(at5.researcher).toBeGreaterThan(0);
-  });
-
-  it("choice q34 primary concern routes correctly", () => {
-    expect(scoreAnswers({ q34: "mental_health" }).guardian).toBe(3);
-    expect(scoreAnswers({ q34: "creativity_loss" }).purist).toBe(3);
-    expect(scoreAnswers({ q34: "misinformation" }).moderator).toBe(3);
-    expect(scoreAnswers({ q34: "not_concerned" }).builder).toBe(2);
+  it("confidence stays non-negative with negative scoring", () => {
+    const scores = scoreAnswers({
+      q3: 1,
+      q10: 5,
+      q12: 5,
+      q25: "existential",
+      q27: "doomer",
+    });
+    const winner = assignArchetype(scores);
+    expect(computeConfidence(scores, winner)).toBeGreaterThanOrEqual(0);
   });
 });

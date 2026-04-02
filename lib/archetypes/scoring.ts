@@ -87,6 +87,9 @@ export function assignArchetype(scores: Scores): ArchetypeKey {
 
 export function computeConfidence(scores: Scores, winner: ArchetypeKey): number {
   const values = Object.values(scores);
-  const total = values.reduce((a, b) => a + b, 0);
-  return total === 0 ? 0 : Math.round((scores[winner] / total) * 100);
+  const min = Math.min(...values);
+  const shifted = values.map((value) => value - min);
+  const total = shifted.reduce((a, b) => a + b, 0);
+  const winnerScore = scores[winner] - min;
+  return total === 0 ? 0 : Math.round((winnerScore / total) * 100);
 }
