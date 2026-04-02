@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# match.ai
 
-## Getting Started
+`match.ai` is an independent AI archetype quiz built to help people locate themselves in the AI conversation.
 
-First, run the development server:
+The current product focus is the quiz itself:
+
+- anonymous participation if desired
+- lightweight self-reflection on AI attitudes and concerns
+- shareable archetype results
+
+Matching is intentionally deferred for now. The near-term goal is to make the archetype quiz strong, legible, and broadly useful on its own.
+
+## Current Status
+
+This repo contains a working MVP built with Next.js, React, TypeScript, Drizzle, and SQLite.
+
+Current features:
+
+- landing page and survey flow
+- anonymous mode and saved-response mode
+- deterministic archetype scoring
+- result pages with static debrief copy
+- admin dashboard for reviewing submissions
+- update-notification signup and delete-data flow
+
+## Product Framing
+
+This is not a validated psychological instrument or formal academic study.
+
+It is best understood as:
+
+- an exploratory archetype quiz
+- an independent product/research-adjacent experiment
+- a tool for helping people reflect on how they relate to AI
+
+## Stack
+
+- Next.js App Router
+- React
+- TypeScript
+- Tailwind CSS
+- Drizzle ORM
+- SQLite
+- Vitest
+
+## Local Setup
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create local environment config by copying `.env.local.example` to `.env.local`.
+
+Set at least:
+
+```env
+ADMIN_SECRET=your-password-here
+```
+
+## Running Locally
+
+Start the dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Useful Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev
+npm run build
+npm run start
+npm test
+npm run db:generate
+npm run db:migrate
+npm run db:studio
+```
 
-## Learn More
+## Data Notes
 
-To learn more about Next.js, take a look at the following resources:
+- survey responses are stored locally in SQLite when the user opts into saved mode
+- anonymous mode computes an archetype result without storing responses
+- notification signups are stored separately
+- local database files are ignored in git
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Admin
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The admin area is protected by `ADMIN_SECRET`.
 
-## Deploy on Vercel
+- login page: `/admin/login`
+- dashboard: `/admin`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Docs
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Project thinking and roadmap notes live in [`docs/`](/Users/tmorg/Projects/match-ai/docs):
+
+- [MVP requirements](/Users/tmorg/Projects/match-ai/docs/MVP_requirements.md)
+- [Technical spec](/Users/tmorg/Projects/match-ai/docs/technical_spec.md)
+- [V2 requirements](/Users/tmorg/Projects/match-ai/docs/V2_requirements.md)
+- [Archetype quiz rework plan](/Users/tmorg/Projects/match-ai/docs/archetype_quiz_rework_plan.md)
+- [Archetype decisions](/Users/tmorg/Projects/match-ai/docs/archetype_quiz_decisions.md)
+- [Archetypes v2 draft](/Users/tmorg/Projects/match-ai/docs/archetypes_v2_draft.md)
+- [Survey v2 question set](/Users/tmorg/Projects/match-ai/docs/survey_v2_question_set.md)
+
+## Near-Term Priorities
+
+- improve archetype separation
+- move from 8 archetypes to a stronger 9-archetype model
+- revise the question set for better differentiation and broader accessibility
+- keep the quiz lightweight enough for public sharing
+
+## License
+
+No license has been added yet.
