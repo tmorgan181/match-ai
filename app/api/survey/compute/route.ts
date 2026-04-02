@@ -20,8 +20,8 @@ const computeSchema = z.object({
   q25: z.enum(["mental_health", "environment", "job_displacement", "misinformation",
                "privacy", "creativity_loss", "existential", "not_concerned"]).optional(),
   q26: z.enum(["government", "companies", "international", "open_source", "no_one"]).optional(),
-  q27: z.enum(["builder", "guardian", "student", "optimist", "pragmatist", "skeptic",
-               "purist", "antagonist", "doomer"]).optional(),
+  q27: z.enum(["builder", "guardian", "advocate", "student", "researcher", "optimist",
+               "pragmatist", "skeptic", "purist", "antagonist", "displaced", "doomer"]).optional(),
   q28: z.enum(["expert", "advanced", "intermediate", "basic", "very_little"]).optional(),
 });
 

@@ -3,6 +3,21 @@ import Link from "next/link";
 import DeleteDataButton from "./components/DeleteDataButton";
 import NotifyButton from "./components/NotifyButton";
 
+const ARCHETYPE_GRID = [
+  "builder",
+  "guardian",
+  "advocate",
+  "student",
+  "researcher",
+  "optimist",
+  "pragmatist",
+  "skeptic",
+  "purist",
+  "antagonist",
+  "displaced",
+  "doomer",
+] as const;
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-neutral-950 text-neutral-100">
@@ -70,23 +85,29 @@ export default function Home() {
 
       {/* Archetype previews */}
       <section className="px-4 pb-20 flex flex-col items-center">
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-3xl">
           <h2 className="text-xs uppercase tracking-widest text-neutral-500 font-medium mb-8 text-center">
             The AI archetypes
           </h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {Object.values(ARCHETYPES).map((a) => (
-              <div
-                key={a.name}
-                className="rounded-xl border border-neutral-800 bg-neutral-900/50 px-5 py-4 flex flex-col gap-1"
-              >
-                <p className="text-sm font-semibold">{a.name}</p>
-                <p className="text-xs text-violet-400 italic">{a.tagline}</p>
-                <p className="text-xs text-neutral-500 leading-relaxed mt-1">
-                  {a.strengths.join(" · ")}
-                </p>
-              </div>
-            ))}
+          <div className="grid gap-4 sm:grid-cols-2">
+            {ARCHETYPE_GRID.map((key) => {
+              const archetype = ARCHETYPES[key];
+              return (
+                <Link
+                  key={archetype.name}
+                  href={`/archetypes/${key}`}
+                  className="group rounded-xl border border-neutral-800 bg-neutral-900/50 px-4 py-4 min-h-36 flex items-center justify-center text-center transition-colors hover:border-violet-700 hover:bg-neutral-900/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+                >
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <p className="text-lg font-semibold leading-tight">{archetype.name}</p>
+                    <p className="text-sm text-violet-400 italic leading-relaxed">{archetype.tagline}</p>
+                    <p className="text-xs text-neutral-500 leading-relaxed">
+                      {archetype.strengths.join(" · ")}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
