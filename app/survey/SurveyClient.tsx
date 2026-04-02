@@ -2,12 +2,18 @@
 
 import { STEPS } from "@/lib/survey/questions";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 type FormValues = Record<string, string | number>;
 
 const TOTAL_STEPS = STEPS.length;
+const SURVEY_DRAFT_KEY = "match-ai-survey-draft";
+
+type SurveyDraft = {
+  step: number;
+  values: FormValues;
+};
 
 export default function SurveyPage() {
   const [step, setStep] = useState(0);
@@ -19,13 +25,52 @@ export default function SurveyPage() {
   const saveData = saveParam === "true";
   const [showConsentModal, setShowConsentModal] = useState(saveParam === null);
   const [consentChoice, setConsentChoice] = useState<"save" | "anon" | null>(null);
+  const hydratedRef = useRef(false);
 
-  const { register, handleSubmit, watch, setValue, formState: { errors } } =
+  const { register, handleSubmit, watch, setValue, reset, formState: { errors } } =
     useForm<FormValues>({ mode: "onTouched" });
+  const watchedValues = watch();
 
   const currentStep = STEPS[step];
   const isLastStep = step === TOTAL_STEPS - 1;
   const progress = ((step + 1) / TOTAL_STEPS) * 100;
+
+  useEffect(() => {
+    if (hydratedRef.current) return;
+
+    try {
+      const rawDraft = window.localStorage.getItem(SURVEY_DRAFT_KEY);
+      if (!rawDraft) {
+        hydratedRef.current = true;
+        return;
+      }
+
+      const draft = JSON.parse(rawDraft) as SurveyDraft;
+      if (draft.values) reset(draft.values);
+      if (typeof draft.step === "number") {
+        const nextStep = Math.min(Math.max(draft.step, 0), TOTAL_STEPS - 1);
+        setStep(nextStep);
+      }
+    } catch {
+      window.localStorage.removeItem(SURVEY_DRAFT_KEY);
+    } finally {
+      hydratedRef.current = true;
+    }
+  }, [reset]);
+
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+
+    try {
+      const draft: SurveyDraft = {
+        step,
+        values: watchedValues as FormValues,
+      };
+      window.localStorage.setItem(SURVEY_DRAFT_KEY, JSON.stringify(draft));
+    } catch {
+      // Ignore draft persistence failures so the survey never hard-crashes.
+    }
+  }, [step, watchedValues]);
 
   function skipQuestion(id: string) {
     setValue(id, "" as never, { shouldValidate: false });
@@ -74,6 +119,7 @@ export default function SurveyPage() {
           return;
         }
         const { archetype } = await res.json();
+        window.localStorage.removeItem(SURVEY_DRAFT_KEY);
         router.push(`/survey/result?a=${archetype}`);
       } catch {
         setError("Network error. Please check your connection and try again.");
@@ -98,6 +144,7 @@ export default function SurveyPage() {
         return;
       }
       const { id } = await res.json();
+      window.localStorage.removeItem(SURVEY_DRAFT_KEY);
       router.push(`/survey/${id}/result`);
     } catch {
       setError("Network error. Please check your connection and try again.");
@@ -362,6 +409,22 @@ export default function SurveyPage() {
               {submitting ? "Submitting…" : "See my archetype"}
             </button>
           )}
+        </div>
+
+        <div className="pt-1 flex items-center justify-center gap-4 text-center">
+          <button
+            type="button"
+            onClick={() => saveData ? router.replace("/survey?save=false") : setShowConsentModal(true)}
+            className="text-xs text-violet-500 hover:text-violet-400 underline underline-offset-2 transition-colors"
+          >
+            {saveData ? "Switch to anonymous mode" : "Switch to saved mode"}
+          </button>
+          <a
+            href="/privacy"
+            className="text-xs text-neutral-600 hover:text-neutral-400 underline underline-offset-2 transition-colors"
+          >
+            Privacy policy
+          </a>
         </div>
       </form>
 

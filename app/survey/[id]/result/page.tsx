@@ -1,4 +1,5 @@
 import { ARCHETYPES, type ArchetypeKey } from "@/lib/archetypes/definitions";
+import EmailResultsButton from "@/app/components/EmailResultsButton";
 import { getStaticDebrief } from "@/lib/debrief/static";
 import { db } from "@/lib/db";
 import { responses } from "@/lib/db/schema";
@@ -94,7 +95,7 @@ export default async function ResultPage({ params }: Props) {
           </p>
           {response.consentMatching && (
             <p className="text-sm text-neutral-400 leading-relaxed">
-              You're on the list. We'll reach out to the email you provided when updates launch — more questions, archetypes, and ways to connect.
+              We'll reach out to the email you provided when updates launch — more questions, archetypes, and ways to connect.
             </p>
           )}
           <p className="text-sm text-neutral-400 leading-relaxed">
@@ -104,6 +105,11 @@ export default async function ResultPage({ params }: Props) {
 
         {/* Share */}
         <div className="flex flex-col items-center gap-3">
+          <EmailResultsButton
+            archetypeName={archetype.name}
+            tagline={archetype.tagline}
+            reflection={debrief}
+          />
           <ShareButton
             title={`I'm ${archetype.name} — match.ai`}
             text={`${archetype.tagline} Take the survey to find your AI ethics archetype.`}

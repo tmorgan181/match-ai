@@ -1,5 +1,6 @@
 import { ARCHETYPES, type ArchetypeKey } from "@/lib/archetypes/definitions";
 import { getStaticDebrief } from "@/lib/debrief/static";
+import EmailResultsButton from "@/app/components/EmailResultsButton";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -65,6 +66,11 @@ export default async function EphemeralResultPage({ searchParams }: Props) {
 
         {/* CTAs */}
         <div className="flex flex-col items-center gap-3">
+          <EmailResultsButton
+            archetypeName={archetype.name}
+            tagline={archetype.tagline}
+            reflection={debrief}
+          />
           <Link
             href="/survey"
             className="text-sm text-violet-400 hover:text-violet-300 underline underline-offset-2"
