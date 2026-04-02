@@ -1,0 +1,187 @@
+Do you hate AI?
+Have you fallen in love with an AI?
+Do you or have you ever had an AI girlfriend/boyfriend/partner?
+Do you think AI makes people dumber?
+Do you value the right to bear arms in America?
+Do you believe the world is headed toward a global water shortage?
+Have you noticed the effects of climate change?
+Are you concerned with deepfakes and other AI impersonation technology?
+Do you find AI music appealing?
+Is AI art a violation of copyright law?
+Does ChatGPT have a good memory?
+Are plants conscious?
+Do you know how to deploy a web app?
+Have you been to a foreign country?
+Do you speak multiple languages?
+How old is your primary vehicle?
+Are you comfortable being alone?
+
+
+**100 Questions for Archetype Differentiation**
+
+### Agree ↔ Disagree (1-5)
+
+1. AI should be regulated more strictly than it currently is.
+2. I trust AI companies to self-regulate responsibly.
+3. The benefits of AI outweigh the risks.
+4. Human creativity is inherently more valuable than AI-generated content.
+5. I am concerned about the environmental impacts of AI datacenters.
+6. AI chatbots can provide meaningful emotional support.
+7. AI will become conscious before the year 2100.
+8. I always want to know the truth, even if it means I was wrong.
+9. Most people don't understand the risks of AI well enough to consent to using it.
+10. AI is making humanity dumber.
+11. The open-source AI movement is important for democracy.
+12. AI art should be eligible for copyright protection.
+13. Using AI to write emails or messages is dishonest.
+14. I would trust an AI to make medical decisions for me.
+15. Social media algorithms are a net negative for society.
+16. AI-generated content should be clearly labeled.
+17. I am optimistic about AI's impact on the job market.
+18. Children should not have access to AI chatbots.
+19. AI is fundamentally just pattern matching, not intelligence.
+20. I am comfortable with my personal data being used to train AI.
+21. The focus on AI safety is overblown.
+22. AI companions could help reduce loneliness.
+23. Traditional education is better than AI-assisted learning.
+24. I worry about AI being used for mass surveillance.
+25. Artists should be compensated when their work is used to train AI.
+26. AI can help solve climate change.
+27. The current pace of AI development is too fast.
+28. I trust AI more than I trust human decision-makers in some contexts.
+29. AI deepfakes pose an existential threat to democracy.
+30. Community-driven AI development is more trustworthy than corporate AI.
+31. AI should never be used in criminal justice decisions.
+32. I am religious or spiritual.
+33. I spend a lot of time in nature.
+34. Human connection is being eroded by technology.
+35. I exercise regularly.
+36. The internet was better before AI-generated content became common.
+37. AI music is legitimate art.
+38. I would date someone who uses an AI companion.
+39. Prompt injection attacks are a serious security concern.
+40. AI literacy should be taught in schools.
+
+### Familiar ↔ Unfamiliar (1-5)
+
+41. The suicide of Sewell Setzer III
+42. Social media recommendation algorithms
+43. Large Language Models (LLMs)
+44. The EU AI Act
+45. Reinforcement Learning from Human Feedback (RLHF)
+46. AI alignment research
+47. Synthetic data generation
+48. Character.AI and similar chatbot platforms
+49. Deepfake detection technology
+50. The concept of "AI slop" (low-quality AI-generated content flooding the internet)
+51. OpenAI's governance structure
+52. Adversarial examples in machine learning
+53. The dead internet theory
+54. AI safety organizations like Anthropic or DeepMind
+55. Content moderation AI systems
+56. Generative adversarial networks (GANs)
+57. AI watermarking techniques
+58. The Turing Test
+59. AI hallucinations
+60. Model Context Protocol (MCP)
+
+### Yes / No / Sometimes
+
+61. Do you use AI chatbots?
+62. Do you regularly vote in municipal and state elections?
+63. Have you or someone you know experienced AI psychosis or been harmed by AI chatbot interactions?
+64. Could you write pseudocode or code to implement a recursive function?
+65. Does your job involve writing emails?
+66. Do you or have you ever occupied a seat on any political committee?
+67. Do you handle legal documents or regulatory material?
+68. Are you involved in construction, engineering, or computer science?
+69. Do you have children or other individuals for whom you are a guardian?
+70. Have you fallen in love with an AI?
+71. Do you or have you ever had an AI girlfriend/boyfriend/partner?
+72. Do you contribute to open-source projects?
+73. Have you reported AI-generated misinformation or bot accounts online?
+74. Do you fact-check information before sharing it?
+75. Have you attended a protest or demonstration?
+76. Do you create art, music, or other creative work?
+77. Have you used AI to generate images or art?
+78. Do you know how to deploy a web app?
+79. Have you been to a foreign country?
+80. Do you speak multiple languages?
+81. Are you comfortable being alone?
+82. Have you ever testified or spoken at a public hearing?
+83. Do you moderate or administer an online community?
+84. Have you lost a job or opportunity to AI automation?
+85. Do you read research papers about AI?
+
+### Multiple Choice
+
+86. When was the last time you talked to someone about your mental health?
+    - Within the past week / month / year / more than a year / never/prefer not to say
+
+87. How often do you use AI tools in your daily life?
+    - Multiple times a day / Daily / Weekly / Rarely / Never
+
+88. What is your primary concern about AI? (pick one)
+    - Mental health impacts / Environmental costs / Job displacement / Misinformation / Privacy / Loss of human creativity / Existential risk / I'm not concerned
+
+89. If you could change one thing about how AI is developed, what would it be?
+    - Slow it down / Make it more transparent / Regulate it heavily / Make it more accessible / Focus on safety / Preserve human jobs / Ban certain uses / Nothing
+
+90. How much technical knowledge do you have about how AI works?
+    - Expert / Advanced / Intermediate / Basic / None
+
+91. Which statement best describes your relationship with AI?
+    - I build AI systems / I use AI tools regularly / I study AI / I actively avoid AI / I'm cautiously experimenting / I fight against AI misuse
+
+92. What motivates you to care about AI ethics? (pick one)
+    - Personal experience with harm / Concern for vulnerable people / Professional responsibility / Curiosity / Political values / Creative preservation / Fear of the future
+
+93. How old is your primary vehicle?
+    - Don't own one / Less than 5 years / 5-10 years / 10-20 years / Over 20 years
+
+94. Where do you get most of your information about AI?
+    - Research papers / News media / Social media / Tech blogs / Friends/community / Personal experimentation / I don't seek it out
+
+95. Do you think plants are conscious?
+    - Yes / No / Maybe / I don't know what consciousness means
+
+### Free Text
+
+96. What is the first word that comes to mind when you hear "AI"?
+
+97. What do you want to build or change about AI? (1-2 sentences)
+
+98. Describe a time AI helped you or someone you know. (optional)
+
+99. Describe a time AI harmed you or someone you know. (optional)
+
+100. If you could ask AI developers one question, what would it be? (optional)
+
+
+
+Claude Chrome: 
+
+**Emotional/personal relationship with AI**
+- Have you ever felt uncomfortable after an interaction with an AI? (yes/sometimes/no)
+- Do you think AI understands you better or worse than most people in your life?
+- Have you ever felt deceived by an AI system?
+
+**Values and tradeoffs** (these force people off the fence)
+- If AI could eliminate a disease but put 10,000 researchers out of work, would that be a good trade?
+- Should AI systems be allowed to refuse requests? (yes/no/depends)
+- Who should be most responsible for AI harm — developers, platforms, or governments?
+
+**Identity and labor**
+- Has your work or creative practice changed because of AI?
+- Do you think your job will look meaningfully different in 5 years because of AI?
+
+**Trust and power**
+- Which institution do you trust most to govern AI? (government / big tech / academia / open source community / none)
+- Do you think the people building AI share your values?
+
+**Wildcard that I think is underexplored**
+- Do you think AI should have any rights or protections? Ever? (this would beautifully separate archetypes in unexpected ways)
+
+The tradeoff questions and the "who do you trust" question would be especially powerful for distinguishing archetypes that currently might look similar on the surface — a Guardian who trusts government regulation versus one who trusts grassroots organizing are quite different people.
+
+Who should be primarily responsible for governing AI — governments, tech companies, international bodies, open-source communities, or no one?
