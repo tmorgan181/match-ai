@@ -126,7 +126,7 @@ export default function SurveyPage() {
     const cleaned: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(data)) {
       if (v === "" || v === undefined || v === null) continue;
-      const scaleIds = ["q3","q4","q5","q6","q7","q8","q9","q10","q11","q12","q13","q14","q15","q16","q29","q30","q31","q32"];
+      const scaleIds = ["q3","q4","q5","q6","q7","q8","q9","q10","q11","q12","q13","q14","q15","q16","q29","q30","q31","q32","q33","q34","q35"];
       if (scaleIds.includes(k)) {
         const n = Number(v);
         if (!isNaN(n) && n >= 1 && n <= 5) cleaned[k] = n;

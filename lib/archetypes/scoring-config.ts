@@ -190,7 +190,7 @@ export const SCORING_CONFIG: ScoringConfig = {
     options: {
       direct_harm: { guardian: 3, antagonist: 3, displaced: 1 },
       research: { researcher: 3, skeptic: 3, student: 1 },
-        useful_tools: { builder: 1, optimist: 2, pragmatist: 2 },
+      useful_tools: { builder: 2, optimist: 2, pragmatist: 2 },
       human_values: { purist: 4, guardian: 1 },
       economic_harm: { displaced: 5, antagonist: 1 },
       catastrophic_risk: { doomer: 5, researcher: 1 },
@@ -254,6 +254,27 @@ export const SCORING_CONFIG: ScoringConfig = {
       { when: { gte: 4 }, add: { researcher: 3, skeptic: 1, student: 1, builder: -2 } },
       { when: { eq: 3 }, add: { researcher: 1, student: 1 } },
       { when: { lte: 2 }, add: { builder: 2, pragmatist: 1 } },
+    ],
+  },
+  q33: {
+    type: "scale",
+    rules: [
+      { when: { gte: 4 }, add: { guardian: 1, advocate: 2, skeptic: 1, pragmatist: -1, optimist: -1 } },
+      { when: { eq: 3 }, add: { guardian: 1 } },
+    ],
+  },
+  q34: {
+    type: "scale",
+    rules: [
+      { when: { gte: 4 }, add: { researcher: 2, advocate: 2, skeptic: 1 } },
+      { when: { eq: 3 }, add: { researcher: 1, skeptic: 1 } },
+    ],
+  },
+  q35: {
+    type: "scale",
+    rules: [
+      { when: { gte: 4 }, add: { advocate: 2, antagonist: 2, skeptic: 1 } },
+      { when: { eq: 3 }, add: { advocate: 1 } },
     ],
   },
 };

@@ -20,8 +20,8 @@ const submitSchema = z.object({
   q9: scale.optional(), q10: scale.optional(), q11: scale.optional(),
   q12: scale.optional(), q13: scale.optional(), q14: scale.optional(),
   q15: scale.optional(), q16: scale.optional(), q29: scale.optional(),
-  q31: scale.optional(), q32: scale.optional(),
-  q30: scale.optional(),
+  q30: scale.optional(), q31: scale.optional(), q32: scale.optional(),
+  q33: scale.optional(), q34: scale.optional(), q35: scale.optional(),
 
   // Yes/No/Sometimes — all optional
   q17: yns.optional(), q18: yns.optional(), q19: yns.optional(),

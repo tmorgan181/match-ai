@@ -178,6 +178,27 @@ export const STEPS: Step[] = [
         lowLabel: "Strongly disagree",
         highLabel: "Strongly agree",
       },
+      {
+        type: "scale",
+        id: "q33",
+        text: "The environmental cost of AI is one of my biggest concerns.",
+        lowLabel: "Strongly disagree",
+        highLabel: "Strongly agree",
+      },
+      {
+        type: "scale",
+        id: "q34",
+        text: "A major AI risk is that it reinforces bias and discrimination at scale.",
+        lowLabel: "Strongly disagree",
+        highLabel: "Strongly agree",
+      },
+      {
+        type: "scale",
+        id: "q35",
+        text: "AI is making surveillance and loss of privacy feel normal.",
+        lowLabel: "Strongly disagree",
+        highLabel: "Strongly agree",
+      },
     ],
   },
   {
@@ -241,13 +262,13 @@ export const STEPS: Step[] = [
       {
         type: "choice",
         id: "q27",
-        text: "Which statement resonates with you most?",
+        text: "When AI issues come up, which response feels most natural to you?",
         options: [
-          { value: "learn_more", label: "We should understand AI better before taking strong positions" },
-          { value: "build_better", label: "We should build better systems and adapt responsibly" },
-          { value: "set_guardrails", label: "We should protect people with stronger rules and safeguards" },
-          { value: "push_back", label: "We should push back on AI's expansion into everyday life" },
-          { value: "take_xrisk_seriously", label: "We should treat advanced AI as a much more serious long-term danger" },
+          { value: "learn_more", label: "I want to understand it better before taking a strong position" },
+          { value: "build_better", label: "I want better tools and systems" },
+          { value: "set_guardrails", label: "I want stronger rules and safeguards" },
+          { value: "push_back", label: "I want to limit or push back on its expansion" },
+          { value: "take_xrisk_seriously", label: "I want people to take long-term risk more seriously" },
         ],
       },
       {
