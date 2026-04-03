@@ -9,7 +9,11 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "test": "vitest"
+    "test": "vitest",
+    "simulate:archetypes": "tsx scripts/simulate-archetypes.ts",
+    "simulate:archetypes:uniform": "tsx scripts/simulate-archetypes.ts --trials=50000 --profile=uniform",
+    "simulate:archetypes:centered": "tsx scripts/simulate-archetypes.ts --trials=50000 --profile=centered",
+    "simulate:archetypes:engaged": "tsx scripts/simulate-archetypes.ts --trials=50000 --profile=engaged"
   },
   "dependencies": {
     "better-sqlite3": "^12.8.0",
@@ -29,6 +33,7 @@
     "@types/react-dom": "^19",
     "drizzle-kit": "^0.31.10",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^4.1.2"
   }
