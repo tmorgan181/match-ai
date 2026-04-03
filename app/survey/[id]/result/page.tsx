@@ -1,5 +1,6 @@
 import { ARCHETYPES, type ArchetypeKey } from "@/lib/archetypes/definitions";
 import EmailResultsButton from "@/app/components/EmailResultsButton";
+import RetakeSurveyLink from "@/app/components/RetakeSurveyLink";
 import { getStaticDebrief } from "@/lib/debrief/static";
 import { db } from "@/lib/db";
 import { responses } from "@/lib/db/schema";
@@ -110,6 +111,11 @@ export default async function ResultPage({ params }: Props) {
             tagline={archetype.tagline}
             reflection={debrief}
           />
+          <RetakeSurveyLink
+            className="text-sm text-violet-400 hover:text-violet-300 underline underline-offset-2"
+          >
+            Retake the survey →
+          </RetakeSurveyLink>
           <ShareButton
             title={`I'm ${archetype.name} — match.ai`}
             text={`${archetype.tagline} Take the survey to find your AI ethics archetype.`}

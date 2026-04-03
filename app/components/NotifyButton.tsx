@@ -33,7 +33,7 @@ export default function NotifyButton() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors"
+        className="cursor-pointer text-violet-400 hover:text-violet-300 underline underline-offset-2 transition-colors"
       >
         Sign up for notifications
       </button>

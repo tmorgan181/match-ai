@@ -1,6 +1,7 @@
 import { ARCHETYPES, type ArchetypeKey } from "@/lib/archetypes/definitions";
 import { getStaticDebrief } from "@/lib/debrief/static";
 import EmailResultsButton from "@/app/components/EmailResultsButton";
+import RetakeSurveyLink from "@/app/components/RetakeSurveyLink";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -60,7 +61,7 @@ export default async function EphemeralResultPage({ searchParams }: Props) {
         <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 px-5 py-5 flex flex-col gap-2">
           <h3 className="text-sm font-semibold text-neutral-300">Nothing was stored</h3>
           <p className="text-sm text-neutral-400 leading-relaxed">
-            You chose anonymous mode — your answers and archetype were not saved. If you'd like to be notified about future updates, retake the survey and consent to data storage.
+            You chose anonymous mode — your answers and archetype were not saved. You can retake the survey either anonymously or in saved mode if you want update notifications.
           </p>
         </div>
 
@@ -71,12 +72,11 @@ export default async function EphemeralResultPage({ searchParams }: Props) {
             tagline={archetype.tagline}
             reflection={debrief}
           />
-          <Link
-            href="/survey"
+          <RetakeSurveyLink
             className="text-sm text-violet-400 hover:text-violet-300 underline underline-offset-2"
           >
-            Retake and save responses →
-          </Link>
+            Retake the survey →
+          </RetakeSurveyLink>
           <a
             href="/survey"
             className="text-xs text-neutral-600 hover:text-neutral-400 underline underline-offset-2 transition-colors"

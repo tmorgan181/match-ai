@@ -43,7 +43,7 @@ export default function DeleteDataButton() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-xs text-neutral-600 hover:text-neutral-400 transition-colors"
+        className="cursor-pointer text-xs text-neutral-600 hover:text-neutral-400 transition-colors"
       >
         Delete my data
       </button>

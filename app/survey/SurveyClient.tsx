@@ -15,6 +15,13 @@ type SurveyDraft = {
   values: FormValues;
 };
 
+const QUESTION_NUMBERS = Object.fromEntries(
+  STEPS.flatMap((surveyStep) => surveyStep.questions).map((question, index) => [
+    question.id,
+    String(index + 1).padStart(2, "0"),
+  ])
+) as Record<string, string>;
+
 export default function SurveyPage() {
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -25,6 +32,7 @@ export default function SurveyPage() {
   const saveData = saveParam === "true";
   const [showConsentModal, setShowConsentModal] = useState(saveParam === null);
   const [consentChoice, setConsentChoice] = useState<"save" | "anon" | null>(null);
+  const [consentModalMode, setConsentModalMode] = useState<"entry" | "switch">(saveParam === null ? "entry" : "switch");
   const hydratedRef = useRef(false);
 
   const { register, handleSubmit, watch, setValue, reset, formState: { errors } } =
@@ -85,6 +93,31 @@ export default function SurveyPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  function openConsentModal(mode: "entry" | "switch") {
+    setConsentModalMode(mode);
+    setConsentChoice(null);
+    setShowConsentModal(true);
+  }
+
+  function closeConsentModal() {
+    setConsentChoice(null);
+    setShowConsentModal(false);
+  }
+
+  function restartSurvey() {
+    reset({});
+    setStep(0);
+    setError(null);
+    setConsentChoice(null);
+    closeConsentModal();
+    try {
+      window.localStorage.removeItem(SURVEY_DRAFT_KEY);
+    } catch {
+      // Ignore storage failures so restart still works.
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   async function onSubmit(data: FormValues) {
     setSubmitting(true);
     setError(null);
@@ -93,7 +126,7 @@ export default function SurveyPage() {
     const cleaned: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(data)) {
       if (v === "" || v === undefined || v === null) continue;
-      const scaleIds = ["q3","q4","q5","q6","q7","q8","q9","q10","q11","q12","q13","q14","q15","q16"];
+      const scaleIds = ["q3","q4","q5","q6","q7","q8","q9","q10","q11","q12","q13","q14","q15","q16","q29","q30","q31","q32"];
       if (scaleIds.includes(k)) {
         const n = Number(v);
         if (!isNaN(n) && n >= 1 && n <= 5) cleaned[k] = n;
@@ -131,12 +164,31 @@ export default function SurveyPage() {
     // Research consent given — save to DB
     cleaned.consentResearch = true;
 
-    try {
-      const res = await fetch("/api/survey/submit", {
+    async function submitSaved(confirmOverwrite = false) {
+      return fetch("/api/survey/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(cleaned),
+        body: JSON.stringify({ ...cleaned, confirmOverwrite }),
       });
+    }
+
+    try {
+      let res = await submitSaved(false);
+
+      if (res.status === 409) {
+        const json = await res.json();
+        const confirmed = window.confirm(
+          `${json.message ?? "A saved response already exists for this email."}\n\nPress OK to overwrite the existing saved response, or Cancel to keep the current one.`
+        );
+
+        if (!confirmed) {
+          setSubmitting(false);
+          return;
+        }
+
+        res = await submitSaved(true);
+      }
+
       if (!res.ok) {
         const json = await res.json();
         setError(json.error ?? "Something went wrong. Please try again.");
@@ -180,6 +232,9 @@ export default function SurveyPage() {
 
               return (
                 <div key={q.id} className="flex flex-col gap-3">
+                  <span className="text-xs text-violet-500 font-mono">
+                    {QUESTION_NUMBERS[q.id]}
+                  </span>
                   <div className="flex items-start justify-between gap-4">
                     <label className="text-base font-medium leading-snug">{q.text}</label>
                     {!isRequired && (
@@ -414,8 +469,15 @@ export default function SurveyPage() {
         <div className="pt-1 flex items-center justify-center gap-4 text-center">
           <button
             type="button"
-            onClick={() => saveData ? router.replace("/survey?save=false") : setShowConsentModal(true)}
-            className="text-xs text-violet-500 hover:text-violet-400 underline underline-offset-2 transition-colors"
+            onClick={restartSurvey}
+            className="cursor-pointer text-xs text-neutral-600 hover:text-neutral-400 underline underline-offset-2 transition-colors"
+          >
+            Restart survey
+          </button>
+          <button
+            type="button"
+            onClick={() => saveData ? router.replace("/survey?save=false") : openConsentModal("switch")}
+            className="cursor-pointer text-xs text-violet-500 hover:text-violet-400 underline underline-offset-2 transition-colors"
           >
             {saveData ? "Switch to anonymous mode" : "Switch to saved mode"}
           </button>
@@ -431,7 +493,7 @@ export default function SurveyPage() {
       {/* Consent modal */}
       {showConsentModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-          <div className="absolute inset-0 bg-black/70" />
+          <div className="absolute inset-0 bg-black/70" onClick={closeConsentModal} />
           <div className="relative w-full max-w-md bg-neutral-900 border border-neutral-700 rounded-2xl p-6 flex flex-col gap-5">
             <h2 className="text-lg font-semibold">Before you start</h2>
 
@@ -439,7 +501,7 @@ export default function SurveyPage() {
               <button
                 type="button"
                 onClick={() => setConsentChoice("save")}
-                className={`rounded-xl border px-4 py-3 flex flex-col gap-1 text-left transition-colors ${consentChoice === "save" ? "border-violet-600 bg-violet-950/60" : "border-neutral-700 bg-neutral-800/40 hover:border-violet-800 hover:bg-violet-950/20"}`}
+                className={`cursor-pointer rounded-xl border px-4 py-3 flex flex-col gap-1 text-left transition-colors ${consentChoice === "save" ? "border-violet-600 bg-violet-950/60" : "border-neutral-700 bg-neutral-800/40 hover:border-violet-800 hover:bg-violet-950/20"}`}
               >
                 <p className="text-sm font-medium text-violet-300">Consent to data storage</p>
                 <p className="text-xs text-neutral-400 leading-relaxed">
@@ -450,7 +512,7 @@ export default function SurveyPage() {
               <button
                 type="button"
                 onClick={() => setConsentChoice("anon")}
-                className={`rounded-xl border px-4 py-3 flex flex-col gap-1 text-left transition-colors ${consentChoice === "anon" ? "border-violet-600 bg-violet-950/60" : "border-neutral-700 bg-neutral-800/40 hover:border-violet-800 hover:bg-violet-950/20"}`}
+                className={`cursor-pointer rounded-xl border px-4 py-3 flex flex-col gap-1 text-left transition-colors ${consentChoice === "anon" ? "border-violet-600 bg-violet-950/60" : "border-neutral-700 bg-neutral-800/40 hover:border-violet-800 hover:bg-violet-950/20"}`}
               >
                 <p className="text-sm font-medium text-violet-300">Anonymous — nothing stored</p>
                 <p className="text-xs text-neutral-400 leading-relaxed">
@@ -464,9 +526,9 @@ export default function SurveyPage() {
               disabled={!consentChoice}
               onClick={() => {
                 router.replace(consentChoice === "save" ? "/survey?save=true" : "/survey?save=false");
-                setShowConsentModal(false);
+                closeConsentModal();
               }}
-              className="w-full py-2.5 rounded-lg text-sm font-medium bg-violet-600 hover:bg-violet-500 disabled:opacity-30 disabled:cursor-not-allowed text-white transition-colors"
+              className="cursor-pointer w-full py-2.5 rounded-lg text-sm font-medium bg-violet-600 hover:bg-violet-500 disabled:opacity-30 disabled:cursor-not-allowed text-white transition-colors"
             >
               Confirm
             </button>
@@ -479,7 +541,19 @@ export default function SurveyPage() {
               </p>
               <div className="flex gap-3 text-xs">
                 <a href="/privacy" className="text-violet-500 hover:text-violet-400 underline underline-offset-2">Privacy policy</a>
-                <button type="button" onClick={() => router.push("/")} className="text-neutral-600 hover:text-neutral-400 transition-colors">No thanks, go back</button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (consentModalMode === "switch") {
+                      closeConsentModal();
+                      return;
+                    }
+                    router.push("/");
+                  }}
+                  className="cursor-pointer text-neutral-600 hover:text-neutral-400 transition-colors"
+                >
+                  No thanks, go back
+                </button>
               </div>
             </div>
           </div>

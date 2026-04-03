@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { notifySignups, responses } from "@/lib/db/schema";
 import { assignArchetype, computeConfidence, scoreAnswers } from "@/lib/archetypes/scoring";
+import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -18,7 +19,9 @@ const submitSchema = z.object({
   q6: scale.optional(), q7: scale.optional(), q8: scale.optional(),
   q9: scale.optional(), q10: scale.optional(), q11: scale.optional(),
   q12: scale.optional(), q13: scale.optional(), q14: scale.optional(),
-  q15: scale.optional(), q16: scale.optional(),
+  q15: scale.optional(), q16: scale.optional(), q29: scale.optional(),
+  q31: scale.optional(), q32: scale.optional(),
+  q30: scale.optional(),
 
   // Yes/No/Sometimes — all optional
   q17: yns.optional(), q18: yns.optional(), q19: yns.optional(),
@@ -26,12 +29,11 @@ const submitSchema = z.object({
   q23: yns.optional(),
 
   // Multiple choice — all optional
-  q24: z.enum(["lt_6m", "6m_2y", "2y_5y", "gt_5y"]).optional(),
+  q24: z.enum(["direct_harm", "research", "useful_tools", "human_values", "economic_harm", "catastrophic_risk", "policy_leverage"]).optional(),
   q25: z.enum(["mental_health", "environment", "job_displacement", "misinformation",
                "privacy", "creativity_loss", "existential", "not_concerned"]).optional(),
   q26: z.enum(["government", "companies", "international", "open_source", "no_one"]).optional(),
-  q27: z.enum(["builder", "guardian", "advocate", "student", "researcher", "optimist",
-               "pragmatist", "skeptic", "purist", "antagonist", "displaced", "doomer"]).optional(),
+  q27: z.enum(["learn_more", "build_better", "set_guardrails", "push_back", "take_xrisk_seriously"]).optional(),
   q28: z.enum(["expert", "advanced", "intermediate", "basic", "very_little"]).optional(),
 
   // Contact & consent
@@ -39,6 +41,7 @@ const submitSchema = z.object({
   email: z.string().email("Valid email required").optional(),
   consentResearch: z.literal(true, { message: "You must agree to data storage to participate" }),
   consentMatching: z.boolean().optional(), // opt-in for V2 update notifications
+  confirmOverwrite: z.boolean().optional(),
 });
 
 export async function POST(request: Request) {
@@ -57,26 +60,57 @@ export async function POST(request: Request) {
     );
   }
 
-  const { name, email, consentResearch, consentMatching, q1, q2, ...answers } = parsed.data;
+  const { name, email, consentResearch, consentMatching, confirmOverwrite, q1, q2, ...answers } = parsed.data;
 
   const scores = scoreAnswers(answers);
   const archetype = assignArchetype(scores);
   const confidence = computeConfidence(scores, archetype);
-  const id = nanoid();
+  const normalizedEmail = email?.trim().toLowerCase();
 
-  db.insert(responses).values({
-    id,
+  const [existingResponse] = normalizedEmail
+    ? await db
+        .select({ id: responses.id })
+        .from(responses)
+        .where(eq(responses.email, normalizedEmail))
+        .limit(1)
+    : [];
+
+  if (existingResponse && !confirmOverwrite) {
+    return NextResponse.json(
+      {
+        error: "A saved response already exists for this email.",
+        duplicate: true,
+        message: "Submitting again will overwrite your existing saved response. If you prefer, you can delete your data instead of replacing it.",
+      },
+      { status: 409 }
+    );
+  }
+
+  const id = existingResponse?.id ?? nanoid();
+  const payload = {
     name: name ?? null,
-    email: email ?? null,
+    email: normalizedEmail ?? null,
     consentResearch,
     consentMatching: consentMatching ?? false,
     archetype,
     scoreData: JSON.stringify({ scores, confidence }),
     answers: JSON.stringify({ q1, q2, ...answers }),
-  }).run();
+  };
 
-  if (consentMatching && email) {
-    db.insert(notifySignups).values({ id: nanoid(), email, consent: true }).run();
+  if (existingResponse) {
+    db.update(responses).set(payload).where(eq(responses.id, existingResponse.id)).run();
+  } else {
+    db.insert(responses).values({
+      id,
+      ...payload,
+    }).run();
+  }
+
+  if (normalizedEmail) {
+    db.delete(notifySignups).where(eq(notifySignups.email, normalizedEmail)).run();
+    if (consentMatching) {
+      db.insert(notifySignups).values({ id: nanoid(), email: normalizedEmail, consent: true }).run();
+    }
   }
 
   return NextResponse.json({ id, archetype, scores, confidence });
