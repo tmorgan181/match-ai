@@ -10,11 +10,12 @@ describe("scoreAnswers", () => {
   it("advocate profile lands on advocate", () => {
     const scores = scoreAnswers({
       q7: 2,
-      q11: 4,
-      q14: 5,
+      q13: 5,
+      q14: 3,
       q25: "privacy",
+      q24: "policy_leverage",
       q26: "government",
-      q27: "advocate",
+      q27: "set_guardrails",
       q28: "basic",
     });
     expect(assignArchetype(scores)).toBe("advocate");
@@ -27,8 +28,9 @@ describe("scoreAnswers", () => {
       q11: 5,
       q16: 4,
       q19: "sometimes",
+      q24: "direct_harm",
       q25: "misinformation",
-      q27: "antagonist",
+      q27: "push_back",
     });
     expect(assignArchetype(scores)).toBe("antagonist");
   });
@@ -40,8 +42,11 @@ describe("scoreAnswers", () => {
       q17: "yes",
       q18: "yes",
       q22: "yes",
-      q27: "builder",
+      q24: "useful_tools",
+      q27: "build_better",
       q28: "expert",
+      q29: 5,
+      q30: 2,
     });
     expect(assignArchetype(scores)).toBe("builder");
   });
@@ -52,8 +57,9 @@ describe("scoreAnswers", () => {
       q10: 4,
       q20: "yes",
       q21: "yes",
+      q24: "economic_harm",
       q25: "job_displacement",
-      q27: "displaced",
+      q27: "push_back",
       q22: "no",
     });
     expect(assignArchetype(scores)).toBe("displaced");
@@ -65,9 +71,9 @@ describe("scoreAnswers", () => {
       q10: 5,
       q12: 5,
       q15: 4,
-      q23: "yes",
+      q24: "catastrophic_risk",
       q25: "existential",
-      q27: "doomer",
+      q27: "take_xrisk_seriously",
     });
     expect(assignArchetype(scores)).toBe("doomer");
   });
@@ -77,10 +83,11 @@ describe("scoreAnswers", () => {
       q7: 1,
       q9: 4,
       q11: 5,
-      q13: 5,
+      q31: 5,
       q19: "yes",
+      q24: "direct_harm",
       q25: "mental_health",
-      q27: "guardian",
+      q27: "set_guardrails",
     });
     expect(assignArchetype(scores)).toBe("guardian");
   });
@@ -93,8 +100,10 @@ describe("scoreAnswers", () => {
       q10: 1,
       q12: 1,
       q17: "yes",
+      q23: "no",
+      q24: "useful_tools",
       q25: "not_concerned",
-      q27: "optimist",
+      q27: "build_better",
     });
     expect(assignArchetype(scores)).toBe("optimist");
   });
@@ -103,11 +112,14 @@ describe("scoreAnswers", () => {
     const scores = scoreAnswers({
       q3: 4,
       q7: 5,
+      q13: 1,
       q10: 1,
       q17: "yes",
-      q18: "yes",
+      q18: "no",
+      q29: 3,
+      q30: 2,
       q26: "companies",
-      q27: "pragmatist",
+      q27: "build_better",
       q28: "advanced",
     });
     expect(assignArchetype(scores)).toBe("pragmatist");
@@ -117,11 +129,13 @@ describe("scoreAnswers", () => {
     const scores = scoreAnswers({
       q9: 5,
       q10: 5,
+      q16: 5,
       q17: "no",
       q21: "yes",
       q22: "no",
+      q24: "human_values",
       q25: "creativity_loss",
-      q27: "purist",
+      q27: "push_back",
     });
     expect(assignArchetype(scores)).toBe("purist");
   });
@@ -130,11 +144,13 @@ describe("scoreAnswers", () => {
     const scores = scoreAnswers({
       q5: 5,
       q12: 4,
+      q14: 5,
       q15: 5,
-      q23: "yes",
-      q24: "gt_5y",
-      q27: "researcher",
+      q24: "research",
+      q27: "learn_more",
       q28: "expert",
+      q29: 4,
+      q30: 5,
     });
     expect(assignArchetype(scores)).toBe("researcher");
   });
@@ -145,10 +161,12 @@ describe("scoreAnswers", () => {
       q6: 2,
       q8: 5,
       q10: 3,
+      q16: 4,
       q11: 4,
       q17: "no",
+      q24: "research",
       q25: "environment",
-      q27: "skeptic",
+      q27: "learn_more",
     });
     expect(assignArchetype(scores)).toBe("skeptic");
   });
@@ -158,10 +176,11 @@ describe("scoreAnswers", () => {
       q4: 5,
       q5: 4,
       q12: 3,
-      q23: "sometimes",
-      q24: "lt_6m",
-      q27: "student",
+      q32: 5,
+      q24: "research",
+      q27: "learn_more",
       q28: "basic",
+      q14: 2,
     });
     expect(assignArchetype(scores)).toBe("student");
   });
@@ -202,7 +221,7 @@ describe("scoreAnswers", () => {
       q10: 5,
       q12: 5,
       q25: "existential",
-      q27: "doomer",
+      q27: "take_xrisk_seriously",
     });
     const winner = assignArchetype(scores);
     expect(computeConfidence(scores, winner)).toBeGreaterThanOrEqual(0);
